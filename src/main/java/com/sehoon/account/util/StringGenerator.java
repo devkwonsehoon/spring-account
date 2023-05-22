@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class StringGenerator {
     public static String generateAccountNumber() {
-        String pattern = "yyyyMMddHHmmss";
+        String pattern = "MMddHHmmss"; // 편의를 위해 시간 기준 생성
         SimpleDateFormat formatter = new SimpleDateFormat(pattern, new Locale("KOREAN", "KOREA"));
         return formatter.format(new Date());
     }
