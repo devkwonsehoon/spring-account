@@ -8,6 +8,7 @@ import com.sehoon.account.exception.UserException;
 import com.sehoon.account.repository.AccountRepository;
 import com.sehoon.account.repository.UserRepository;
 import com.sehoon.account.type.AccountStatus;
+import com.sehoon.account.util.StringGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,14 @@ public class AccountService implements AccountServiceIF {
         int accountCounts = accountRepository.findAccountsByAccountUserId_Id(createRequest.getUserId()).size();
         if (10 == accountCounts) {
             throw new AccountException(ACCOUNT_CREATE_LIMIT.getMessage());
+        }
+
+        String accountNum = StringGenerator.generateAccountNumber();
+        Account alreadyUsedNumber = accountRepository.findAccountByAccountNumber(accountNum);
+
+        while (alreadyUsedNumber != null) {
+            accountNum = StringGenerator.generateAccountNumber();
+            alreadyUsedNumber = accountRepository.findAccountByAccountNumber(accountNum);
         }
 
         Account account = accountRepository.save(createRequest.toEntity(user.get()));
