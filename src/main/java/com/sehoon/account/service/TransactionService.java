@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -27,6 +28,7 @@ import static com.sehoon.account.common.ExceptionMessage.*;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class TransactionService implements TransactionServiceIF {
 
     private final TransactionRepository transactionRepository;
@@ -106,6 +108,7 @@ public class TransactionService implements TransactionServiceIF {
         return new TransactionResponse(newTransaction);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public TransactionDetailResponse getTransaction(String transactionId) {
         Transaction transaction = transactionRepository.findTransactionByTransactionId(transactionId);

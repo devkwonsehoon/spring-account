@@ -11,8 +11,8 @@ import com.sehoon.account.type.AccountStatus;
 import com.sehoon.account.util.StringGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,12 +21,12 @@ import static com.sehoon.account.common.ExceptionMessage.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AccountService implements AccountServiceIF {
 
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
 
-    @Transactional
     @Override
     public CreateAccountResponse createAccount(CreateAccountRequest createRequest) {
         Optional<AccountUser> user = userRepository.findById(createRequest.getUserId());
@@ -51,8 +51,6 @@ public class AccountService implements AccountServiceIF {
         return new CreateAccountResponse(account);
     }
 
-
-    @Transactional
     @Override
     public UnregisterAccountResponse unregisterAccount(UnregisterAccountRequest unregisterRequest) {
         Optional<AccountUser> user = userRepository.findById(unregisterRequest.getUserId());
@@ -82,7 +80,7 @@ public class AccountService implements AccountServiceIF {
         return new UnregisterAccountResponse(account);
     }
 
-
+    @Transactional(readOnly = true)
     @Override
     public List<AccountItem> findAllAccounts(Long userId) {
         Optional<AccountUser> user = userRepository.findById(userId);
@@ -96,6 +94,7 @@ public class AccountService implements AccountServiceIF {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Account findAccount(String accountNumber) {
         return accountRepository.findAccountByAccountNumber(accountNumber);
     }
